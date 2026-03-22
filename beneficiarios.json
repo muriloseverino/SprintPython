@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "cpf": "4362903830",
+        "nome": "Murilo",
+        "data_nasc": "03012006",
+        "sexo": "Masc",
+        "programa_social": "tdb",
+        "endereco": {
+            "cep": "050",
+            "logradouro": "s",
+            "cidade": "s",
+            "estado": "s"
+        },
+        "email": "murilo@gmail.com",
+        "telefone": "11933"
+    },
+    {
+        "id": 2,
+        "cpf": "43662903830",
+        "nome": "Murilo Severino",
+        "data_nasc": "0506200",
+        "sexo": "fem",
+        "programa_social": "ss",
+        "endereco": {
+            "cep": "05",
+            "logradouro": "ss",
+            "cidade": "ss",
+            "estado": "ss"
+        },
+        "email": "muri@gmail.com",
+        "telefone": "188"
+    },
+    {
+        "id": 3,
+        "cpf": "10116650850",
+        "nome": "Murilo Ayabe",
+        "data_nasc": "03012000",
+        "sexo": "masc",
+        "programa_social": "tdb",
+        "endereco": {
+            "cep": "05",
+            "logradouro": "ss",
+            "cidade": "ss",
+            "estado": "ss"
+        },
+        "email": "murilo@gmail.com",
+        "telefone": "11955"
+    }
+]
