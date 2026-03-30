@@ -1,5 +1,6 @@
 import json
 import os
+import csv
 from datetime import datetime
 
 ARQUIVO_BENEFICIARIOS = "beneficiarios.json"
@@ -20,6 +21,126 @@ def carregar_dados(arquivo):
 def salvar_dados(arquivo, lista):
     with open(arquivo, "w", encoding="utf-8") as f:
         json.dump(lista, f, ensure_ascii=False, indent=4)
+
+
+def exportar_beneficiarios_csv(beneficiarios):
+    if len(beneficiarios) == 0:
+        print("Nenhum beneficiário cadastrado para exportar!")
+        return
+
+    data = [['ID', 'CPF', 'Nome', 'Data Nascimento', 'Sexo', 'Programa Social', 'CEP', 'Logradouro', 'Cidade', 'Estado',
+             'Email', 'Telefone']]
+
+    for b in beneficiarios:
+        linha = [
+            b['id'],
+            b['cpf'],
+            b['nome'],
+            b['data_nasc'],
+            b['sexo'],
+            b['programa_social'],
+            b['endereco']['cep'],
+            b['endereco']['logradouro'],
+            b['endereco']['cidade'],
+            b['endereco']['estado'],
+            b['email'],
+            b['telefone']
+        ]
+        data.append(linha)
+
+    with open('beneficiarios.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    print("Beneficiários exportados com sucesso para beneficiarios.csv!")
+
+
+def exportar_dentistas_csv(dentistas):
+    if len(dentistas) == 0:
+        print("Nenhum dentista cadastrado para exportar!")
+        return
+
+    data = [['ID', 'CPF', 'Nome', 'Data Nascimento', 'Sexo', 'CRO', 'Especialidades', 'Disponibilidade', 'CEP',
+             'Logradouro', 'Cidade', 'Estado', 'Email', 'Telefone']]
+
+    for d in dentistas:
+        linha = [
+            d['id'],
+            d['cpf'],
+            d['nome'],
+            d['data_nasc'],
+            d['sexo'],
+            d['cro'],
+            d['especialidades'],
+            d['disponibilidade'],
+            d['endereco']['cep'],
+            d['endereco']['logradouro'],
+            d['endereco']['cidade'],
+            d['endereco']['estado'],
+            d['email'],
+            d['telefone']
+        ]
+        data.append(linha)
+
+    with open('dentistas.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    print("Dentistas exportados com sucesso para dentistas.csv!")
+
+
+def exportar_pedidos_csv(pedidos_ajuda):
+    if len(pedidos_ajuda) == 0:
+        print("Nenhum pedido de ajuda cadastrado para exportar!")
+        return
+
+    data = [['ID Pedido', 'ID Beneficiário', 'Nome', 'Sexo', 'Descrição', 'Email', 'Telefone', 'Data Criação']]
+
+    for p in pedidos_ajuda:
+        linha = [
+            p['id'],
+            p['id_beneficiario'] if p['id_beneficiario'] else 'Não vinculado',
+            p['nome'],
+            p['sexo'],
+            p['descricao'],
+            p['email'],
+            p['telefone'],
+            p['data_criacao']
+        ]
+        data.append(linha)
+
+    with open('pedidos_ajuda.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    print("Pedidos de ajuda exportados com sucesso para pedidos_ajuda.csv!")
+
+
+def exportar_atendimentos_csv(atendimentos):
+    if len(atendimentos) == 0:
+        print("Nenhum atendimento cadastrado para exportar!")
+        return
+
+    data = [['ID Dentista', 'Nome Dentista', 'ID Beneficiário', 'Nome Beneficiário', 'Descrição', 'Data Atendimento',
+             'Data Registro']]
+
+    for a in atendimentos:
+        linha = [
+            a['id_dentista'],
+            a['dentista'],
+            a['id_beneficiario'],
+            a['beneficiario'],
+            a['descricao'],
+            a['data'],
+            a['data_registro']
+        ]
+        data.append(linha)
+
+    with open('atendimentos.csv', 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    print("Atendimentos exportados com sucesso para atendimentos.csv!")
 
 
 # ===================== MAIN =====================

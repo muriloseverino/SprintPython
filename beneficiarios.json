@@ -46,5 +46,37 @@
         },
         "email": "murilo@gmail.com",
         "telefone": "11955"
+    },
+    {
+        "id": 4,
+        "cpf": "123",
+        "nome": "m",
+        "data_nasc": "03012006",
+        "sexo": "masc",
+        "programa_social": "tfb",
+        "endereco": {
+            "cep": "050",
+            "logradouro": "sales junior",
+            "cidade": "sp",
+            "estado": "sp"
+        },
+        "email": "mu@gamil.com",
+        "telefone": "11955"
+    },
+    {
+        "id": 5,
+        "cpf": "436",
+        "nome": "Murilo Seve",
+        "data_nasc": "03012000",
+        "sexo": "masc",
+        "programa_social": "tdb",
+        "endereco": {
+            "cep": "05",
+            "logradouro": "sales",
+            "cidade": "sp",
+            "estado": "sp"
+        },
+        "email": "muri@gmail.com",
+        "telefone": "1188"
     }
 ]
