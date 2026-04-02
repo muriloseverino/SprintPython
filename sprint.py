@@ -23,36 +23,65 @@ def salvar_dados(arquivo, lista):
         json.dump(lista, f, ensure_ascii=False, indent=4)
 
 
+# ===================== EXPORTAR / IMPORTAR JSON =====================
+
+def exportar_json(lista, nome_sugerido):
+    if len(lista) == 0:
+        print("Nenhum dado cadastrado para exportar!")
+        return
+    nome_arq = input(f"Digite o nome do arquivo JSON (padrão: {nome_sugerido}): ").strip()
+    if not nome_arq:
+        nome_arq = nome_sugerido
+    if not nome_arq.endswith(".json"):
+        nome_arq += ".json"
+    try:
+        with open(nome_arq, "w", encoding="utf-8") as f:
+            json.dump(lista, f, ensure_ascii=False, indent=4)
+        print(f"Dados exportados com sucesso para '{nome_arq}'!")
+    except Exception as e:
+        print(f"Erro ao exportar: {e}")
+
+
+def importar_json(lista, arquivo_padrao):
+    nome_arq = input(f"Digite o nome do arquivo JSON (padrão: {arquivo_padrao}): ").strip()
+    if not nome_arq:
+        nome_arq = arquivo_padrao
+    if not nome_arq.endswith(".json"):
+        nome_arq += ".json"
+    try:
+        with open(nome_arq, "r", encoding="utf-8") as f:
+            dados = json.load(f)
+        lista.clear()
+        lista.extend(dados)
+        print(f"Dados importados com sucesso de '{nome_arq}'!")
+    except FileNotFoundError:
+        print(f"Arquivo '{nome_arq}' não encontrado.")
+    except json.JSONDecodeError:
+        print("Erro ao ler o arquivo JSON. Verifique se ele é válido.")
+    except Exception as e:
+        print(f"Erro ao importar: {e}")
+
+
+# ===================== EXPORTAR CSV =====================
+
 def exportar_beneficiarios_csv(beneficiarios):
     if len(beneficiarios) == 0:
         print("Nenhum beneficiário cadastrado para exportar!")
         return
 
-    data = [['ID', 'CPF', 'Nome', 'Data Nascimento', 'Sexo', 'Programa Social', 'CEP', 'Logradouro', 'Cidade', 'Estado',
-             'Email', 'Telefone']]
-
-    for b in beneficiarios:
-        linha = [
-            b['id'],
-            b['cpf'],
-            b['nome'],
-            b['data_nasc'],
-            b['sexo'],
-            b['programa_social'],
-            b['endereco']['cep'],
-            b['endereco']['logradouro'],
-            b['endereco']['cidade'],
-            b['endereco']['estado'],
-            b['email'],
-            b['telefone']
-        ]
-        data.append(linha)
+    cabecalho = ['ID', 'CPF', 'Nome', 'Data Nascimento', 'Sexo', 'Programa Social',
+                 'CEP', 'Logradouro', 'Cidade', 'Estado', 'Email', 'Telefone']
 
     with open('beneficiarios.csv', 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerows(data)
-
-    print("Beneficiários exportados com sucesso para beneficiarios.csv!")
+        writer.writerow(cabecalho)
+        for b in beneficiarios:
+            writer.writerow([
+                b['id'], b['cpf'], b['nome'], b['data_nasc'], b['sexo'],
+                b['programa_social'], b['endereco']['cep'], b['endereco']['logradouro'],
+                b['endereco']['cidade'], b['endereco']['estado'], b['email'], b['telefone']
+            ])
+    print("Beneficiários exportados com sucesso para 'beneficiarios.csv'!")
 
 
 def exportar_dentistas_csv(dentistas):
@@ -60,33 +89,22 @@ def exportar_dentistas_csv(dentistas):
         print("Nenhum dentista cadastrado para exportar!")
         return
 
-    data = [['ID', 'CPF', 'Nome', 'Data Nascimento', 'Sexo', 'CRO', 'Especialidades', 'Disponibilidade', 'CEP',
-             'Logradouro', 'Cidade', 'Estado', 'Email', 'Telefone']]
-
-    for d in dentistas:
-        linha = [
-            d['id'],
-            d['cpf'],
-            d['nome'],
-            d['data_nasc'],
-            d['sexo'],
-            d['cro'],
-            d['especialidades'],
-            d['disponibilidade'],
-            d['endereco']['cep'],
-            d['endereco']['logradouro'],
-            d['endereco']['cidade'],
-            d['endereco']['estado'],
-            d['email'],
-            d['telefone']
-        ]
-        data.append(linha)
+    cabecalho = ['ID', 'CPF', 'Nome', 'Data Nascimento', 'Sexo', 'CRO',
+                 'Especialidades', 'Disponibilidade', 'CEP', 'Logradouro',
+                 'Cidade', 'Estado', 'Email', 'Telefone']
 
     with open('dentistas.csv', 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerows(data)
-
-    print("Dentistas exportados com sucesso para dentistas.csv!")
+        writer.writerow(cabecalho)
+        for d in dentistas:
+            writer.writerow([
+                d['id'], d['cpf'], d['nome'], d['data_nasc'], d['sexo'],
+                d['cro'], d['especialidades'], d['disponibilidade'],
+                d['endereco']['cep'], d['endereco']['logradouro'],
+                d['endereco']['cidade'], d['endereco']['estado'],
+                d['email'], d['telefone']
+            ])
+    print("Dentistas exportados com sucesso para 'dentistas.csv'!")
 
 
 def exportar_pedidos_csv(pedidos_ajuda):
@@ -94,26 +112,20 @@ def exportar_pedidos_csv(pedidos_ajuda):
         print("Nenhum pedido de ajuda cadastrado para exportar!")
         return
 
-    data = [['ID Pedido', 'ID Beneficiário', 'Nome', 'Sexo', 'Descrição', 'Email', 'Telefone', 'Data Criação']]
-
-    for p in pedidos_ajuda:
-        linha = [
-            p['id'],
-            p['id_beneficiario'] if p['id_beneficiario'] else 'Não vinculado',
-            p['nome'],
-            p['sexo'],
-            p['descricao'],
-            p['email'],
-            p['telefone'],
-            p['data_criacao']
-        ]
-        data.append(linha)
+    cabecalho = ['ID Pedido', 'ID Beneficiário', 'Nome', 'Sexo',
+                 'Descrição', 'Email', 'Telefone', 'Data Criação']
 
     with open('pedidos_ajuda.csv', 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerows(data)
-
-    print("Pedidos de ajuda exportados com sucesso para pedidos_ajuda.csv!")
+        writer.writerow(cabecalho)
+        for p in pedidos_ajuda:
+            writer.writerow([
+                p['id'],
+                p['id_beneficiario'] if p['id_beneficiario'] else 'Não vinculado',
+                p['nome'], p['sexo'], p['descricao'],
+                p['email'], p['telefone'], p['data_criacao']
+            ])
+    print("Pedidos de ajuda exportados com sucesso para 'pedidos_ajuda.csv'!")
 
 
 def exportar_atendimentos_csv(atendimentos):
@@ -121,26 +133,18 @@ def exportar_atendimentos_csv(atendimentos):
         print("Nenhum atendimento cadastrado para exportar!")
         return
 
-    data = [['ID Dentista', 'Nome Dentista', 'ID Beneficiário', 'Nome Beneficiário', 'Descrição', 'Data Atendimento',
-             'Data Registro']]
-
-    for a in atendimentos:
-        linha = [
-            a['id_dentista'],
-            a['dentista'],
-            a['id_beneficiario'],
-            a['beneficiario'],
-            a['descricao'],
-            a['data'],
-            a['data_registro']
-        ]
-        data.append(linha)
+    cabecalho = ['ID Dentista', 'Nome Dentista', 'ID Beneficiário',
+                 'Nome Beneficiário', 'Descrição', 'Data Atendimento', 'Data Registro']
 
     with open('atendimentos.csv', 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerows(data)
-
-    print("Atendimentos exportados com sucesso para atendimentos.csv!")
+        writer.writerow(cabecalho)
+        for a in atendimentos:
+            writer.writerow([
+                a['id_dentista'], a['dentista'], a['id_beneficiario'],
+                a['beneficiario'], a['descricao'], a['data'], a['data_registro']
+            ])
+    print("Atendimentos exportados com sucesso para 'atendimentos.csv'!")
 
 
 # ===================== MAIN =====================
@@ -152,12 +156,13 @@ def main():
     atendimentos = carregar_dados(ARQUIVO_ATENDIMENTOS)
 
     while True:
-        print("\n=== Menu ===")
+        print("\n=== Menu Principal ===")
         print("1 - Beneficiário")
         print("2 - Dentista")
         print("3 - Pedido de Ajuda")
         print("4 - Registrar Atendimento")
-        print("5 - Sair")
+        print("5 - Importar / Exportar dados")
+        print("6 - Sair")
 
         escolha = input("Escolha uma opção: ")
 
@@ -287,6 +292,98 @@ def main():
             salvar_dados(ARQUIVO_ATENDIMENTOS, atendimentos)
 
         elif escolha == "5":
+            while True:
+                print("\n--- Importar / Exportar Dados ---")
+                print("1 - Exportar dados para JSON")
+                print("2 - Importar dados de JSON")
+                print("3 - Exportar dados para CSV")
+                print("4 - Voltar")
+
+                opcao = input("Escolha: ")
+
+                if opcao == "1":
+                    while True:
+                        print("\n  Exportar JSON:")
+                        print("  1 - Beneficiários")
+                        print("  2 - Dentistas")
+                        print("  3 - Pedidos de Ajuda")
+                        print("  4 - Atendimentos")
+                        print("  5 - Voltar")
+
+                        sub = input("  Escolha: ")
+
+                        if sub == "1":
+                            exportar_json(beneficiarios, ARQUIVO_BENEFICIARIOS)
+                        elif sub == "2":
+                            exportar_json(dentistas, ARQUIVO_DENTISTAS)
+                        elif sub == "3":
+                            exportar_json(pedidos_ajuda, ARQUIVO_PEDIDOS)
+                        elif sub == "4":
+                            exportar_json(atendimentos, ARQUIVO_ATENDIMENTOS)
+                        elif sub == "5":
+                            break
+                        else:
+                            print("Opção inválida.")
+
+                elif opcao == "2":
+                    while True:
+                        print("\n  Importar JSON:")
+                        print("  1 - Beneficiários")
+                        print("  2 - Dentistas")
+                        print("  3 - Pedidos de Ajuda")
+                        print("  4 - Atendimentos")
+                        print("  5 - Voltar")
+
+                        sub = input("  Escolha: ")
+
+                        if sub == "1":
+                            importar_json(beneficiarios, ARQUIVO_BENEFICIARIOS)
+                            salvar_dados(ARQUIVO_BENEFICIARIOS, beneficiarios)
+                        elif sub == "2":
+                            importar_json(dentistas, ARQUIVO_DENTISTAS)
+                            salvar_dados(ARQUIVO_DENTISTAS, dentistas)
+                        elif sub == "3":
+                            importar_json(pedidos_ajuda, ARQUIVO_PEDIDOS)
+                            salvar_dados(ARQUIVO_PEDIDOS, pedidos_ajuda)
+                        elif sub == "4":
+                            importar_json(atendimentos, ARQUIVO_ATENDIMENTOS)
+                            salvar_dados(ARQUIVO_ATENDIMENTOS, atendimentos)
+                        elif sub == "5":
+                            break
+                        else:
+                            print("Opção inválida.")
+
+                elif opcao == "3":
+                    while True:
+                        print("\n  Exportar CSV:")
+                        print("  1 - Beneficiários")
+                        print("  2 - Dentistas")
+                        print("  3 - Pedidos de Ajuda")
+                        print("  4 - Atendimentos")
+                        print("  5 - Voltar")
+
+                        sub = input("  Escolha: ")
+
+                        if sub == "1":
+                            exportar_beneficiarios_csv(beneficiarios)
+                        elif sub == "2":
+                            exportar_dentistas_csv(dentistas)
+                        elif sub == "3":
+                            exportar_pedidos_csv(pedidos_ajuda)
+                        elif sub == "4":
+                            exportar_atendimentos_csv(atendimentos)
+                        elif sub == "5":
+                            break
+                        else:
+                            print("Opção inválida.")
+
+                elif opcao == "4":
+                    break
+
+                else:
+                    print("Opção inválida.")
+
+        elif escolha == "6":
             print("Sistema encerrado. Até mais!")
             break
 
